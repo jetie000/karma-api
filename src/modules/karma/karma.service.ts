@@ -56,7 +56,8 @@ async function callGrokApi(
     throw new Error('XAI_API_KEY is not set');
   }
 
-  const instructions = SYSTEM_INSTRUCTIONS[personality] ?? SYSTEM_INSTRUCTIONS['usual'];
+  const instructions =
+    SYSTEM_INSTRUCTIONS[personality] ?? SYSTEM_INSTRUCTIONS['usual'];
 
   const body = {
     model: GROK_MODEL,
@@ -84,7 +85,8 @@ async function callGrokApi(
   const messageOutput = data.output?.find(
     (o) => o.type === 'message' && o.role === 'assistant',
   );
-  const rawText = messageOutput?.content?.find((c) => c.type === 'output_text')?.text ?? '';
+  const rawText =
+    messageOutput?.content?.find((c) => c.type === 'output_text')?.text ?? '';
 
   const jsonMatch = rawText.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {

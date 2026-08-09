@@ -150,7 +150,9 @@ export class UsersService {
   }): Promise<DbUser> {
     const hashedAppleSub = this.hashAppleSubject(profile.sub);
 
-    const byApple = await this.prisma.user.findUnique({ where: { hashedAppleSub } });
+    const byApple = await this.prisma.user.findUnique({
+      where: { hashedAppleSub },
+    });
     if (byApple) {
       return this.prisma.user.update({
         where: { id: byApple.id },
@@ -160,7 +162,9 @@ export class UsersService {
 
     if (profile.email) {
       const normalizedEmail = profile.email.trim().toLowerCase();
-      const byEmail = await this.prisma.user.findUnique({ where: { email: normalizedEmail } });
+      const byEmail = await this.prisma.user.findUnique({
+        where: { email: normalizedEmail },
+      });
       if (byEmail) {
         return this.prisma.user.update({
           where: { id: byEmail.id },
@@ -190,7 +194,8 @@ export class UsersService {
   }
 
   private hashAppleSubject(appleSub: string): string {
-    const secret = process.env.APPLE_SUB_SECRET ?? process.env.GOOGLE_SUB_SECRET;
+    const secret =
+      process.env.APPLE_SUB_SECRET ?? process.env.GOOGLE_SUB_SECRET;
     if (!secret) {
       throw new Error('APPLE_SUB_SECRET is not set');
     }

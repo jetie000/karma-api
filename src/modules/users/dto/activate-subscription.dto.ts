@@ -9,7 +9,9 @@ export class ActivateSubscriptionDto {
   @IsIn(subscriptionTypes)
   subscriptionType: string;
 
-  @ApiPropertyOptional({ description: 'App Store or Google Play receipt for server-side validation' })
+  @ApiPropertyOptional({
+    description: 'App Store or Google Play receipt for server-side validation',
+  })
   @IsOptional()
   @IsString()
   receipt?: string;

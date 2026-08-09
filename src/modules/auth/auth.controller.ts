@@ -120,7 +120,9 @@ export class AuthController {
     @Body() body: { refreshToken?: string },
   ): Promise<AuthResponse> {
     // Accept token from httpOnly cookie (web) or request body (mobile)
-    const token = (req.cookies?.[REFRESH_COOKIE] as string | undefined) ?? body.refreshToken;
+    const token =
+      (req.cookies?.[REFRESH_COOKIE] as string | undefined) ??
+      body.refreshToken;
     const { auth, refreshToken } = await this.authService.refresh(token);
     this.setRefreshCookie(res, refreshToken);
     return { ...auth, refreshToken };

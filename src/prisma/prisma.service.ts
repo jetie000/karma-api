@@ -8,27 +8,44 @@ export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
-  private readonly pool: Pool;
+  private readonly poolInstance: Pool;
 
   constructor() {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {
       throw new Error('DATABASE_URL is required');
     }
-    const requireSsl = connectionString.includes('sslmode=require') ||
-      (!connectionString.includes('sslmode=disable') && !connectionString.includes('localhost') && !connectionString.includes('127.0.0.1'));
 
-    const pool = new Pool({
+    const isLocalhost =
+      connectionString.includes('localhost') ||
+      connectionString.includes('127.0.0.1');
+    const hasSslRequire = connectionString.includes('sslmode=require');
+    const hasSslDisable = connectionString.includes('sslmode=disable');
+
+    const requireSsl = hasSslRequire || (!hasSslDisable && !isLocalhost);
+
+    const poolConfig = {
       connectionString,
-      ssl: requireSsl ? { rejectUnauthorized: false } : false,
+      ssl: requireSsl ? { rejectUnauthorized: false } : undefined,
       max: 10,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,
-      keepAlive: true,
-    });
-    const adapter = new PrismaPg(pool);
+    };
+
+    const adapter = new PrismaPg(poolConfig);
+
     super({ adapter });
-    this.pool = pool;
+
+    if (
+      adapter &&
+      typeof adapter === 'object' &&
+      'pool' in adapter &&
+      adapter.pool instanceof Pool
+    ) {
+      this.poolInstance = adapter.pool;
+    } else {
+      this.poolInstance = new Pool(poolConfig);
+    }
   }
 
   async onModuleInit(): Promise<void> {
@@ -37,6 +54,8 @@ export class PrismaService
 
   async onModuleDestroy(): Promise<void> {
     await this.$disconnect();
-    await this.pool.end();
+    if (this.poolInstance) {
+      await this.poolInstance.end();
+    }
   }
 }

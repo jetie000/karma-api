@@ -45,7 +45,9 @@ export class UsersController {
 
   @Post('activateSubscription')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Activate Pro or Pro+ subscription after in-app purchase' })
+  @ApiOperation({
+    summary: 'Activate Pro or Pro+ subscription after in-app purchase',
+  })
   @ApiBody({ type: ActivateSubscriptionDto })
   @ApiOkResponse({ type: UserResponseDto })
   @ApiUnauthorizedResponse()
@@ -53,6 +55,9 @@ export class UsersController {
     @CurrentUserId() userId: string,
     @Body() body: ActivateSubscriptionDto,
   ): Promise<User> {
-    return this.usersService.activateSubscription(userId, body.subscriptionType);
+    return this.usersService.activateSubscription(
+      userId,
+      body.subscriptionType,
+    );
   }
 }

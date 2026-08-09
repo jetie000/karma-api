@@ -27,7 +27,8 @@ export class AppleOAuthService {
     /** Full name provided by the client (only available on first sign-in) */
     fullName?: string | null,
   ): Promise<AppleUserProfile> {
-    const bundleId = process.env.APPLE_BUNDLE_ID ?? 'com.biggoatssoft.karmatracker';
+    const bundleId =
+      process.env.APPLE_BUNDLE_ID ?? 'com.biggoatssoft.karmatracker';
 
     let claims: AppleTokenClaims;
     try {

@@ -4,7 +4,10 @@ export class AuthResponseDto {
   @ApiProperty()
   accessToken: string;
 
-  @ApiProperty({ required: false, description: 'Returned for mobile clients that cannot use httpOnly cookies' })
+  @ApiProperty({
+    required: false,
+    description: 'Returned for mobile clients that cannot use httpOnly cookies',
+  })
   refreshToken?: string;
 }
 
